@@ -1,0 +1,11 @@
+[Unit]
+Description=Prometheus PowerDNS Exporter
+
+[Service]
+Restart=always
+User=prometheus
+ExecStart=/usr/bin/prometheus-pdns-exporter $ARGS
+EnvironmentFile=-/etc/default/prometheus-pdns-exporter
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,5 @@
+prometheus-pdns-exporter (0.1) jessie-wikimedia; urgency=medium
+
+  * Initial release
+
+ -- Moritz Muehlenhoff <moritz@wikimedia.org>  Fri, 15 Dec 2017 12:36:43 +0000

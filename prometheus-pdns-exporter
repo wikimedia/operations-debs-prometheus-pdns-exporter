@@ -1,0 +1,120 @@
+#!/usr/bin/python
+# Copyright 2017 Moritz Muehlenhoff
+#                Filippo Giunchedi
+#                Wikimedia Foundation
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import argparse
+import logging
+import sys
+import time
+import subprocess
+
+from prometheus_client import start_http_server, Summary
+from prometheus_client.core import (GaugeMetricFamily, REGISTRY)
+
+log = logging.getLogger(__name__)
+
+
+class PowerDNSExporter(object):
+    scrape_duration = Summary(
+            'pdns_scrape_duration_seconds', 'PowerDNS scrape duration')
+
+    @scrape_duration.time()
+    def collect(self):
+        up = GaugeMetricFamily('pdns_up', 'PowerDNS is running')
+
+        try:
+            stats = subprocess.check_output(['sudo', 'pdns_control', 'list'])
+        except subprocess.CalledProcessError:
+            log.warn('Coult not query pdns stats, is the server down?')
+            up.add_metric([], 0)
+            yield up
+            return
+
+        up.add_metric([], 1)
+        yield up
+
+        metrics = {
+            'corrupt-packets': GaugeMetricFamily('pdns_corrupt_packets', 'Number of corrupt packets received'),
+            'qsize-q': GaugeMetricFamily('pdns_qsize_q', 'Number of packets waiting for database attention'),
+            'deferred-cache-inserts': GaugeMetricFamily('pdns_deferred_cache_inserts', 'Number of cache inserts that were deferred because of maintenance'),
+            'deferred-cache-lookup': GaugeMetricFamily('pdns_deferred_cache_lookup', 'Number of cache lookups that were deferred because of maintenance'),
+            'latency': GaugeMetricFamily('pdns_latency', 'Average number of microseconds a packet spends within PowerDNS'),
+            'packetcache-hit': GaugeMetricFamily('pdns_packetcache_hit', 'Number of packets which were answered out of the cache'),
+            'packetcache-miss': GaugeMetricFamily('pdns_packetcache_miss', 'Number of times a packet could not be answered out of the cache'),
+            'packetcache-size': GaugeMetricFamily('pdns_packetcache_size', 'Amount of packets in the packetcache'),
+            'query-cache-miss': GaugeMetricFamily('pdns_query_cache_miss', 'Number of misses on the query cache'),
+            'query-cache-hit': GaugeMetricFamily('pdns_query_cache_hit', 'Number of hits on the query cache'),
+            'recursing-answers': GaugeMetricFamily('pdns_recursing_answers', 'Number of packets we supplied an answer to after recursive processing'),
+            'recursing-questions': GaugeMetricFamily('pdns_recursing_questions', 'Number of packets we performed recursive processing for'),
+            'servfail-packets': GaugeMetricFamily('pdns_servfail_packets', 'Amount of packets that could not be answered due to database problems'),
+            'tcp-answers': GaugeMetricFamily('pdns_tcp_answers', 'Number of answers sent out over TCP'),
+            'tcp-queries': GaugeMetricFamily('pdns_tcp_queries', 'Number of questions received over TCP'),
+            'timedout-packets': GaugeMetricFamily('pdns_timedout_packets', 'Amount of packets that were dropped because they had to wait too long internally'),
+            'udp-answers': GaugeMetricFamily('pdns_udp_answers', 'Number of answers sent out over UDP'),
+            'udp-queries': GaugeMetricFamily('pdns_udp_queries', 'Number of questions received over UDP'),
+            'udp4-answers': GaugeMetricFamily('pdns_udp4_answers', 'Number of answers sent out over UDPv4'),
+            'udp4-queries': GaugeMetricFamily('pdns_udp4_queries', 'Number of questions received over UDPv4'),
+            'udp6-answers': GaugeMetricFamily('pdns_udp6_answers', 'Number of answers sent out over UDPv6'),
+            'udp6-queries': GaugeMetricFamily('pdns_udp6_queries', 'Number of questions received over UDPv6'),
+        }
+
+        # For some reason "pdns_control list" prints a trailing "," in it's output
+        for stat in stats.split(',')[:-1]:
+            metric_name, value = stat.split('=', 1)
+            metric_family = metrics.get(metric_name)
+
+            if metric_family is None:
+                log.warn('Unknown metric %r', metric_name)
+                continue
+
+            try:
+                value = float(value)
+            except ValueError:
+                value = float('nan')
+            metric_family.add_metric([], value)
+
+        for metric in metrics.values():
+            yield metric
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-l', '--listen', metavar='ADDRESS',
+                        help='Listen on this address', default=':9192')
+    parser.add_argument('-d', '--debug', action='store_true',
+                        help='Enable debug logging')
+    args = parser.parse_args()
+
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.WARNING)
+
+    address, port = args.listen.split(':', 1)
+
+    log.info('Starting pdns_recursor_exporter on %s:%s', address, port)
+
+    REGISTRY.register(PowerDNSExporter())
+    start_http_server(int(port), addr=address)
+
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

@@ -1,3 +1,9 @@
+prometheus-pdns-exporter (0.2) trusty-wikimedia; urgency=medium
+
+  * Add Upstart job
+
+ -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Wed, 20 Dec 2017 11:00:39 +0100
+
 prometheus-pdns-exporter (0.1) jessie-wikimedia; urgency=medium
 
   * Initial release

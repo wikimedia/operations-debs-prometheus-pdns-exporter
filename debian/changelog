@@ -1,3 +1,11 @@
+prometheus-pdns-exporter (0.4) stretch-wikimedia; urgency=medium
+
+  * [b792cca] prometheus-pdns-exporter: add missing python dependency
+  * [9ddb46a] postinst: specify nonexistent home directory
+  * [0f799bc] d/: drop upstart file
+
+ -- Arturo Borrero Gonzalez <aborrero@wikimedia.org>  Mon, 03 Jun 2019 14:12:36 +0200
+
 prometheus-pdns-exporter (0.3) jessie-wikimedia; urgency=medium
 
   * d/rules: prevent dh_installinit from installing sysvinit files

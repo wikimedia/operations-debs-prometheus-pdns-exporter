@@ -47,15 +47,15 @@ class PowerDNSExporter(object):
 
         metrics = {
             'corrupt-packets': GaugeMetricFamily('pdns_corrupt_packets', 'Number of corrupt packets received'),
-            'qsize-q': GaugeMetricFamily('pdns_qsize_q', 'Number of packets waiting for database attention'),
             'deferred-cache-inserts': GaugeMetricFamily('pdns_deferred_cache_inserts', 'Number of cache inserts that were deferred because of maintenance'),
             'deferred-cache-lookup': GaugeMetricFamily('pdns_deferred_cache_lookup', 'Number of cache lookups that were deferred because of maintenance'),
             'latency': GaugeMetricFamily('pdns_latency', 'Average number of microseconds a packet spends within PowerDNS'),
             'packetcache-hit': GaugeMetricFamily('pdns_packetcache_hit', 'Number of packets which were answered out of the cache'),
             'packetcache-miss': GaugeMetricFamily('pdns_packetcache_miss', 'Number of times a packet could not be answered out of the cache'),
             'packetcache-size': GaugeMetricFamily('pdns_packetcache_size', 'Amount of packets in the packetcache'),
-            'query-cache-miss': GaugeMetricFamily('pdns_query_cache_miss', 'Number of misses on the query cache'),
+            'qsize-q': GaugeMetricFamily('pdns_qsize_q', 'Number of packets waiting for database attention'),
             'query-cache-hit': GaugeMetricFamily('pdns_query_cache_hit', 'Number of hits on the query cache'),
+            'query-cache-miss': GaugeMetricFamily('pdns_query_cache_miss', 'Number of misses on the query cache'),
             'recursing-answers': GaugeMetricFamily('pdns_recursing_answers', 'Number of packets we supplied an answer to after recursive processing'),
             'recursing-questions': GaugeMetricFamily('pdns_recursing_questions', 'Number of packets we performed recursive processing for'),
             'servfail-packets': GaugeMetricFamily('pdns_servfail_packets', 'Amount of packets that could not be answered due to database problems'),

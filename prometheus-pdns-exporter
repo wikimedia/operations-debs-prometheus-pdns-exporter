@@ -36,8 +36,8 @@ class PowerDNSExporter(object):
 
         try:
             stats = subprocess.check_output(['sudo', 'pdns_control', 'list'])
-        except subprocess.CalledProcessError:
-            log.warn('Coult not query pdns stats, is the server down?')
+        except subprocess.CalledProcessError as e:
+            log.warn('Could not query pdns stats: %s', e)
             up.add_metric([], 0)
             yield up
             return

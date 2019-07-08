@@ -1,3 +1,11 @@
+prometheus-pdns-exporter (0.4.1) stretch-wikimedia; urgency=medium
+
+  * Log more info when `pdns_control list` fails (by bd808)
+  * Add dnsupdate, rd, recursion, security, and udp metrics (by bd808)
+  * Compat level 10
+
+ -- Moritz Muehlenhoff <mmuhlenhoff@wikimedia.org>  Mon, 08 Jul 2019 21:08:20 +0200
+
 prometheus-pdns-exporter (0.4) stretch-wikimedia; urgency=medium
 
   * [b792cca] prometheus-pdns-exporter: add missing python dependency

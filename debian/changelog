@@ -2,7 +2,7 @@ prometheus-pdns-exporter (0.5) stretch-wikimedia; urgency=medium
 
   * Add support for PDNS 4 (mmuhlenhoff)
 
- -- Andrew Bogott <abogott@@wikimedia.org> Fri Nov 22 15:42:37 UTC 2019
+ -- Andrew Bogott <abogott@wikimedia.org>  Fri, 22 Nov 2019 15:50:20 +0000
 
 prometheus-pdns-exporter (0.4.1) stretch-wikimedia; urgency=medium
 

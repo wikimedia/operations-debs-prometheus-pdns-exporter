@@ -83,7 +83,7 @@ class PowerDNSExporter(object):
             'tcp-answers-bytes': GaugeMetricFamily('pdns_tcp_answers_bytes', 'Number of answer bytes sent out over TCP'),
             'tcp4-answers': GaugeMetricFamily('pdns_tcp4_answers', 'Number of answers sent out over TCPv4'),
             'tcp4-answers-bytes': GaugeMetricFamily('pdns_tcp4_answers_bytes', 'Total number of answer bytes sent over TCPv4'),
-            'tcp4-queries': GaugeMetricFamily('pdns_tcp4-queries', 'Number of questions received over TCPv4'),
+            'tcp4-queries': GaugeMetricFamily('pdns_tcp4_queries', 'Number of questions received over TCPv4'),
             'tcp6-answers': GaugeMetricFamily('pdns_tcp6_answers', 'Number of answers sent out over TCPv6'),
             'tcp6-answers-bytes': GaugeMetricFamily('pdns_tcp6_answers_bytes', 'Total number of answer bytes sent over TCPv6'),
             'tcp6-queries': GaugeMetricFamily('pdns_tcp6_queries', 'Number of questions received over TCPv6'),

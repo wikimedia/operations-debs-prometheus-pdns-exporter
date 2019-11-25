@@ -1,3 +1,9 @@
+prometheus-pdns-exporter (0.5.1) stretch-wikimedia; urgency=medium
+
+  * Fix invalid metric name for pdns_tcp4_queries (filippo)
+
+ -- Andrew Bogott <abogott@wikimedia.org>  Tue, 26 Nov 2019 15:05:00 +0000
+
 prometheus-pdns-exporter (0.5) stretch-wikimedia; urgency=medium
 
   * Add support for PDNS 4 (mmuhlenhoff)
